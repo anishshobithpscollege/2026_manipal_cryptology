@@ -76,7 +76,6 @@ jobs:
 
             printf '| %s | %s | %s | [PDF](../../releases/download/latest/%s) |\n' \
               "$no" "$title" "${kind:-—}" "$out" >> "$table"
-            rows=$((rows + 1))
           done
 
           # `while` ran in a subshell, so recount rows from the table file.
