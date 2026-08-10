@@ -1,0 +1,130 @@
+name: Build assignments
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "assignments/**"
+      - "template/**"
+      - "config.json"
+      - "Dockerfile"
+      - ".github/workflows/build.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: build-release
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build Typst image
+        run: docker build -t typst-local .
+
+      - name: Compile assignments
+        run: |
+          set -euo pipefail
+          mkdir -p dist
+
+          # Identity for the output filenames comes from config.json.
+          reg_no=$(jq -r '.reg_no // ""' config.json)
+          author=$(jq -r '.author // ""' config.json)
+          # Slugify for a safe filename: non-alphanumerics -> "_", trimmed.
+          slugify() { echo "$1" | sed -E 's/[^[:alnum:]]+/_/g; s/^_+//; s/_+$//'; }
+          reg_slug=$(slugify "$reg_no")
+          author_slug=$(slugify "$author")
+
+          # Markdown table for the README, built as we go.
+          table=dist/assignments.md
+          printf '| # | Assignment | Kind | Download |\n| :-- | :-- | :-- | :-- |\n' > "$table"
+
+          find assignments -type f -name main.typ | sort | while read -r f; do
+            dir=$(dirname "$f")
+            slug=$(basename "$dir")
+
+            # Assignment number: leading digits of the folder (02-foo -> 02),
+            # falling back to the number field inside main.typ.
+            no=$(echo "$slug" | grep -oE '^[0-9]+' || true)
+            if [ -z "$no" ]; then
+              no=$(sed -n 's/.*number:[[:space:]]*"[^0-9]*\([0-9]\+\).*/\1/p' "$f" | head -1 || true)
+            fi
+            no=${no:-00}
+
+            title=$(sed -n 's/.*title:[[:space:]]*"\([^"]*\)".*/\1/p' "$f" | head -1 || true)
+            [ -z "$title" ] && title="$slug"
+            kind=$(sed -n 's/.*kind:[[:space:]]*"\([^"]*\)".*/\1/p' "$f" | head -1 || true)
+
+            # <reg_no>_<name>_<assignment_no>.pdf, per the required format.
+            base="${reg_slug}_${author_slug}_${no}"
+            out="${base}.pdf"
+            # Guarantee uniqueness if two assignments share a number.
+            if [ -e "dist/$out" ]; then
+              echo "::warning::duplicate assignment number '$no'; disambiguating $f with its folder name"
+              out="${base}_${slug}.pdf"
+            fi
+
+            echo "::group::compile $out"
+            docker run --rm -v "$PWD:/work" -w /work typst-local \
+              compile --root /work "$f" "dist/$out"
+            echo "::endgroup::"
+
+            printf '| %s | %s | %s | [PDF](../../releases/download/latest/%s) |\n' \
+              "$no" "$title" "${kind:-—}" "$out" >> "$table"
+            rows=$((rows + 1))
+          done
+
+          # `while` ran in a subshell, so recount rows from the table file.
+          if [ "$(wc -l < "$table")" -le 2 ]; then
+            printf '_No assignments built yet. Add one under `assignments/`, push to `main`, and this table fills in on its own._\n' > "$table"
+          fi
+
+      - name: Upload artifacts
+        if: ${{ hashFiles('dist/*.pdf') != '' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: pdfs
+          path: dist/*.pdf
+
+      - name: Publish rolling release
+        if: ${{ hashFiles('dist/*.pdf') != '' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release delete latest --yes --cleanup-tag 2>/dev/null || true
+          gh release create latest \
+            --title "Latest build" \
+            --notes "Built from ${GITHUB_SHA::7} on $(date -u +%Y-%m-%d)." \
+            dist/*.pdf
+
+      - name: Update download table in README
+        run: |
+          set -euo pipefail
+          [ -f dist/assignments.md ] || exit 0
+
+          python3 - README.md dist/assignments.md <<'PY'
+          import sys, pathlib
+          readme_path, table_path = sys.argv[1], sys.argv[2]
+          start, end = "<!-- ASSIGNMENTS:START -->", "<!-- ASSIGNMENTS:END -->"
+          readme = pathlib.Path(readme_path).read_text()
+          i, j = readme.find(start), readme.find(end)
+          if i == -1 or j == -1:
+              sys.exit(0)  # markers missing; leave the README alone
+          table = pathlib.Path(table_path).read_text().strip("\n")
+          new = readme[: i + len(start)] + "\n\n" + table + "\n\n" + readme[j:]
+          if new != readme:
+              pathlib.Path(readme_path).write_text(new)
+          PY
+
+          if ! git diff --quiet -- README.md; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add README.md
+            git commit -m "docs: refresh assignment downloads [skip ci]"
+            git push
+          fi
