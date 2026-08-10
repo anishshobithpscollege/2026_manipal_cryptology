@@ -12,7 +12,9 @@ The table below is regenerated automatically on every build — no need to edit 
 
 <!-- ASSIGNMENTS:START -->
 
-_No assignments built yet. Add one under `assignments/`, push to `main`, and this table fills in on its own._
+| # | Assignment | Kind | Download |
+| :-- | :-- | :-- | :-- |
+| 01 | Security Features in Real World Applications | Theory | [PDF](../../releases/download/latest/261100690032_Anish_Shobith_P_S_01.pdf) |
 
 <!-- ASSIGNMENTS:END -->
 
