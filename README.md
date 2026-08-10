@@ -11,7 +11,9 @@ Every push to `main` compiles each assignment to a PDF and attaches it to the **
 The table below is regenerated automatically on every build — no need to edit it.
 
 <!-- ASSIGNMENTS:START -->
+
 _No assignments built yet. Add one under `assignments/`, push to `main`, and this table fills in on its own._
+
 <!-- ASSIGNMENTS:END -->
 
 > Grab everything at once from the [latest release](../../releases/latest), or click a **PDF** link above for a single assignment. The [Actions tab](../../actions) also keeps the build log and a zipped `pdfs` artifact for each run.
