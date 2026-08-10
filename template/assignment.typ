@@ -47,7 +47,7 @@
   )
   set text(font: theme.fonts.body, size: theme.size, fill: theme.ink, lang: "en")
   set par(justify: true, leading: 0.72em)
-  set heading(numbering: "1.1")
+  set heading(numbering: "1.")
   show raw: set text(font: theme.fonts.mono)
   show link: it => if type(it.dest) == str { text(fill: theme.link, it) } else { it }
   show: code-setup
@@ -153,7 +153,7 @@
     }
   }
 
-  set page(numbering: "1", footer: body-footer)
+  set page(numbering: "1.", footer: body-footer)
   counter(page).update(1)
   counter(heading).update(0)
 
