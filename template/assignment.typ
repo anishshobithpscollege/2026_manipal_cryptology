@@ -3,6 +3,15 @@
 
 #let config = json("/config.json")
 
+// Per-kind course/code overrides, keyed by the `kind` string ("Theory"/"Lab")
+// under a `kinds` object in config.json. Falls back to the given value.
+#let _by-kind(kind, field, fallback) = {
+  let overrides = if kind == none { (:) } else {
+    config.at("kinds", default: (:)).at(kind, default: (:))
+  }
+  overrides.at(field, default: fallback)
+}
+
 #let _meta-table(pairs) = {
   let rows = pairs.filter(p => p.at(1) != none)
   if rows.len() == 0 { return none }
@@ -24,8 +33,8 @@
   title: none,
   number: none,
   kind: none,
-  course: config.course,
-  course-code: config.course_code,
+  course: auto,
+  course-code: auto,
   author: config.author,
   reg-no: config.reg_no,
   institution: config.institution,
@@ -35,6 +44,15 @@
   toc: true,
   body,
 ) = {
+  // Resolve subject name/code: an explicit argument wins, else the per-kind
+  // entry in config.json, else the top-level config value.
+  let course = if course == auto {
+    _by-kind(kind, "course", config.at("course", default: none))
+  } else { course }
+  let course-code = if course-code == auto {
+    _by-kind(kind, "course_code", config.at("course_code", default: none))
+  } else { course-code }
+
   let fmt-date = d => if type(d) == datetime {
     d.display("[day] [month repr:long] [year]")
   } else { d }

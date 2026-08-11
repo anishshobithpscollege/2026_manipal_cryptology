@@ -40,9 +40,12 @@ jobs:
           reg_slug=$(slugify "$reg_no")
           author_slug=$(slugify "$author")
 
-          # Markdown table for the README, built as we go.
-          table=dist/assignments.md
-          printf '| # | Assignment | Kind | Download |\n| :-- | :-- | :-- | :-- |\n' > "$table"
+          # One Markdown table per kind for the README, built as we go.
+          theory_table=dist/theory.md
+          lab_table=dist/lab.md
+          header='| # | Assignment | Download |\n| :-- | :-- | :-- |\n'
+          printf "$header" > "$theory_table"
+          printf "$header" > "$lab_table"
 
           find assignments -type f -name main.typ | sort | while read -r f; do
             dir=$(dirname "$f")
@@ -58,10 +61,31 @@ jobs:
 
             title=$(sed -n 's/.*title:[[:space:]]*"\([^"]*\)".*/\1/p' "$f" | head -1 || true)
             [ -z "$title" ] && title="$slug"
-            kind=$(sed -n 's/.*kind:[[:space:]]*"\([^"]*\)".*/\1/p' "$f" | head -1 || true)
 
-            # <reg_no>_<name>_<assignment_no>.pdf, per the required format.
-            base="${reg_slug}_${author_slug}_${no}"
+            # Kind drives the per-subject config below: a main.typ `kind:` wins,
+            # else infer it from the folder.
+            kind=$(sed -n 's/.*kind:[[:space:]]*"\([^"]*\)".*/\1/p' "$f" | head -1 || true)
+            if [ -z "$kind" ]; then
+              case "$dir" in assignments/lab/*) kind="Lab" ;; *) kind="Theory" ;; esac
+            fi
+
+            # Subject name and code, most specific first: a per-document override
+            # in main.typ, else the per-kind entry under `kinds` in config.json,
+            # else the top-level config value.
+            course=$(sed -n 's/.*course:[[:space:]]*"\([^"]*\)".*/\1/p' "$f" | head -1 || true)
+            [ -z "$course" ] && course=$(jq -r --arg k "$kind" '.kinds[$k].course // .course // ""' config.json)
+            code=$(sed -n 's/.*course_code:[[:space:]]*"\([^"]*\)".*/\1/p' "$f" | head -1 || true)
+            [ -z "$code" ] && code=$(jq -r --arg k "$kind" '.kinds[$k].course_code // .course_code // ""' config.json)
+            course_slug=$(slugify "$course")
+            code_slug=$(slugify "$code")
+
+            # <reg_no>_<name>_<course>_<course_code>_<assignment_no>.pdf.
+            # Empty fields are skipped so the name never has a double underscore.
+            base=""
+            for part in "$reg_slug" "$author_slug" "$course_slug" "$code_slug" "$no"; do
+              [ -n "$part" ] || continue
+              base="${base:+${base}_}${part}"
+            done
             out="${base}.pdf"
             # Guarantee uniqueness if two assignments share a number.
             if [ -e "dist/$out" ]; then
@@ -74,13 +98,21 @@ jobs:
               compile --root /work "$f" "dist/$out"
             echo "::endgroup::"
 
-            printf '| %s | %s | %s | [PDF](../../releases/download/latest/%s) |\n' \
-              "$no" "$title" "${kind:-—}" "$out" >> "$table"
+            # Route the row to the Theory or Lab table by its folder.
+            case "$dir" in
+              assignments/lab/*) row_table="$lab_table" ;;
+              *)                 row_table="$theory_table" ;;
+            esac
+            printf '| %s | %s | [PDF](../../releases/download/latest/%s) |\n' \
+              "$no" "$title" "$out" >> "$row_table"
           done
 
-          # `while` ran in a subshell, so recount rows from the table file.
-          if [ "$(wc -l < "$table")" -le 2 ]; then
-            printf '_No assignments built yet. Add one under `assignments/`, push to `main`, and this table fills in on its own._\n' > "$table"
+          # `while` ran in a subshell, so recheck each table from its file.
+          if [ "$(wc -l < "$theory_table")" -le 2 ]; then
+            printf '_None yet. Add one under `assignments/theory/`._\n' > "$theory_table"
+          fi
+          if [ "$(wc -l < "$lab_table")" -le 2 ]; then
+            printf '_None yet. Add one under `assignments/lab/`._\n' > "$lab_table"
           fi
 
       - name: Upload artifacts
@@ -101,23 +133,26 @@ jobs:
             --notes "Built from ${GITHUB_SHA::7} on $(date -u +%Y-%m-%d)." \
             dist/*.pdf
 
-      - name: Update download table in README
+      - name: Update download tables in README
         run: |
           set -euo pipefail
-          [ -f dist/assignments.md ] || exit 0
+          [ -f dist/theory.md ] || exit 0
 
-          python3 - README.md dist/assignments.md <<'PY'
-          import sys, pathlib
-          readme_path, table_path = sys.argv[1], sys.argv[2]
-          start, end = "<!-- ASSIGNMENTS:START -->", "<!-- ASSIGNMENTS:END -->"
+          python3 - <<'PY'
+          import pathlib
+          readme_path = "README.md"
+          blocks = [("THEORY", "dist/theory.md"), ("LAB", "dist/lab.md")]
           readme = pathlib.Path(readme_path).read_text()
-          i, j = readme.find(start), readme.find(end)
-          if i == -1 or j == -1:
-              sys.exit(0)  # markers missing; leave the README alone
-          table = pathlib.Path(table_path).read_text().strip("\n")
-          new = readme[: i + len(start)] + "\n\n" + table + "\n\n" + readme[j:]
-          if new != readme:
-              pathlib.Path(readme_path).write_text(new)
+          original = readme
+          for name, table_path in blocks:
+              start, end = f"<!-- {name}:START -->", f"<!-- {name}:END -->"
+              i, j = readme.find(start), readme.find(end)
+              if i == -1 or j == -1:
+                  continue  # marker missing; leave that block alone
+              table = pathlib.Path(table_path).read_text().strip("\n")
+              readme = readme[: i + len(start)] + "\n\n" + table + "\n\n" + readme[j:]
+          if readme != original:
+              pathlib.Path(readme_path).write_text(readme)
           PY
 
           if ! git diff --quiet -- README.md; then

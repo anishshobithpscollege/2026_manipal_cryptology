@@ -2,8 +2,10 @@
   "author": "Anish Shobith P S",
   "reg_no": "261100690032",
   "institution": "Manipal School of Information Sciences",
-  "course": "Cryptology",
-  "course_code": "CYE 5101",
+  "kinds": {
+    "Theory": { "course": "Cryptology", "course_code": "CYE 5101" },
+    "Lab": { "course": "Cryptology", "course_code": "REPLACE ME" }
+  },
   "logo": "/template/assets/logo.png",
   "logo_width_cm": 2.8
 }
