@@ -9,13 +9,19 @@ Every push to `main` compiles each assignment to a PDF and attaches it to the [l
 ### Theory
 
 <!-- THEORY:START -->
-_None yet. Add one under `assignments/theory/`._
+
+| # | Assignment | Download |
+| :-- | :-- | :-- |
+| 01 | Security Features in Real World Applications | [PDF](../../releases/download/latest/261100690032_Anish_Shobith_P_S_Cryptology_CYE_5101_01.pdf) |
+
 <!-- THEORY:END -->
 
 ### Lab
 
 <!-- LAB:START -->
+
 _None yet. Add one under `assignments/lab/`._
+
 <!-- LAB:END -->
 
 ## Set your identity
