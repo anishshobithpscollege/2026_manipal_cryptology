@@ -27,6 +27,18 @@ Every push to `main` compiles each assignment to a PDF and attaches it to the [l
 
 <!-- LAB:END -->
 
+### Handwritten
+
+Handwritten scans committed beside an assignment as `*-handwritten.pdf`. These link to the file in the repo, not the release.
+
+<!-- HANDWRITTEN:START -->
+
+| # | Assignment | Download |
+| :-- | :-- | :-- |
+| 02 | Caesar, Shift and ROT13 Ciphers | [PDF](assignments/theory/02-caesar-shift-rot13/261100690032_Anish_Shobith_P_S_Cryptology_CYE_5101_02-handwritten.pdf) |
+
+<!-- HANDWRITTEN:END -->
+
 ## Set your identity
 
 Edit `config.json` once. The PDF filenames, cover, and header all read from it.

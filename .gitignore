@@ -1,4 +1,6 @@
 dist/
 *.pdf
+# Keep handwritten scans committed beside their assignment.
+!*-handwritten.pdf
 venv/
 __pycache__/
