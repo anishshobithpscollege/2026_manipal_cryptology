@@ -13,6 +13,7 @@ Every push to `main` compiles each assignment to a PDF and attaches it to the [l
 | # | Assignment | Download |
 | :-- | :-- | :-- |
 | 01 | Security Features in Real World Applications | [PDF](../../releases/download/latest/261100690032_Anish_Shobith_P_S_Cryptology_CYE_5101_01.pdf) |
+| 02 | Caesar, Shift and ROT13 Ciphers | [PDF](../../releases/download/latest/261100690032_Anish_Shobith_P_S_Cryptology_CYE_5101_02.pdf) |
 
 <!-- THEORY:END -->
 
