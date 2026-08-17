@@ -21,7 +21,9 @@ Every push to `main` compiles each assignment to a PDF and attaches it to the [l
 
 <!-- LAB:START -->
 
-_None yet. Add one under `assignments/lab/`._
+| # | Assignment | Download |
+| :-- | :-- | :-- |
+| 02 | Capturing Login Credentials over HTTP and HTTPS with Wireshark | [PDF](../../releases/download/latest/261100690032_Anish_Shobith_P_S_Cryptology_CYE_5151_02.pdf) |
 
 <!-- LAB:END -->
 
