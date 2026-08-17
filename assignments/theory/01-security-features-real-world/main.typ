@@ -5,6 +5,7 @@
   number: "Assignment 01",
   kind: "Theory",
   course: "Cryptology",
+  date: datetime(year: 2026, month: 8, day: 11)
 )
 
 = Security features in real-world applications
