@@ -4,7 +4,6 @@
   title: "Capturing Login Credentials over HTTP and HTTPS with Wireshark",
   number: "Assignment 02",
   kind: "Lab",
-  course: "Cryptology",
   date: datetime(year: 2026, month: 8, day: 18)
 )
 
