@@ -165,21 +165,6 @@ Three named cases appear in this assignment:
 - *ROT13.* A shift of $k = 13$. Since $13 + 13 = 26 equiv 0 space (mod 26)$, applying
   it twice returns the original text, so one operation both encrypts and decrypts.
 
-A _cipher disk_ shows the same shift: two alphabets on concentric rings, the inner
-one turned by $k$. Read a plaintext letter on the outer ring straight inward to get
-its ciphertext letter.
-
-#figure(
-  caption: [Cipher disk for a shift of $3$ (Caesar). Outer ring is plaintext,
-    inner ring (blue) is ciphertext. Reading inward encrypts: $A -> D$, $B -> E$,
-    $X -> A$. Turning the inner ring by $k$ positions gives any shift cipher.],
-  kind: image,
-  supplement: [Figure],
-  cipher-wheel(3),
-)
-
-#pagebreak()
-
 = Encryption of "CHASE YOUR DREAMS"
 
 The plaintext is `CHASE YOUR DREAMS`. Convert each letter to its number $x$, then
@@ -191,15 +176,31 @@ The table below gives all three.
   enc-compare-table(p1),
 )
 
-Restore the spaces to read the three ciphertexts.
-
 == (a) Caesar cipher ($k = 3$)
 
 #result-box("Ciphertext, Caesar k = 3", apply-shift(p1, 3))
 
+#figure(
+  caption: [Cipher disk for a shift of $3$ (Caesar). Outer ring is plaintext,
+    inner ring (blue) is ciphertext. Reading inward encrypts: $A -> D$, $B -> E$,
+    $X -> A$. Turning the inner ring by $k$ positions gives any shift cipher.],
+  kind: image,
+  supplement: [Figure],
+  cipher-wheel(3),
+)
+
 == (b) Shift cipher, key $7$
 
 #result-box("Ciphertext, shift k = 7", apply-shift(p1, 7))
+
+#figure(
+  caption: [Cipher disk for a shift of $7$. Outer ring is plaintext,
+    inner ring (blue) is ciphertext. Reading inward encrypts: $A -> H$, $B -> I$,
+    $X -> Q$. Turning the inner ring by $k$ positions gives any shift cipher.],
+  kind: image,
+  supplement: [Figure],
+  cipher-wheel(7),
+)
 
 == (c) ROT13 ($k = 13$)
 
@@ -236,20 +237,20 @@ Caesar uses $k = 3$, so $x = (y - 3) mod 26$.
 
 #result-box("Plaintext, Caesar", apply-shift(c2a, -3))
 
-== (b) Shift cipher, key $5$: decrypt `SJI IBTW YNRJ`
+== (b) Shift cipher, key $5$: decrypt `SJB DTWP YNRJ`
 
 Here $k = 5$, so $x = (y - 5) mod 26$. When $y - 5$ is negative, add $26$ to bring
 it back into range. For `B`: $1 - 5 = -4 equiv 22 = $ `W`.
 
 #figure(
-  caption: [Shift decryption of `SJI IBTW YNRJ`, $k = 5$],
+  caption: [Shift decryption of `SJB DTWP YNRJ`, $k = 5$],
   decrypt-table(c2b, 5),
 )
 
 #result-box("Plaintext, shift k = 5", apply-shift(c2b, -5))
 
 The last word decrypts cleanly to `TIME`, which fixes the shift at $5$. Re-encrypting
-`NED DWOR TIME` with $k = 5$ reproduces the given ciphertext. The first two words are
+`NEW YORK TIME` with $k = 5$ reproduces the given ciphertext. The first two words are
 not ordinary English, so the source ciphertext holds a transcription slip. The result
 above is the exact output of the arithmetic.
 
