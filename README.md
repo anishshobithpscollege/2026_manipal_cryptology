@@ -24,6 +24,7 @@ Every push to `main` compiles each assignment to a PDF and attaches it to the [l
 | # | Assignment | Download |
 | :-- | :-- | :-- |
 | 02 | Capturing Login Credentials over HTTP and HTTPS with Wireshark | [PDF](../../releases/download/latest/261100690032_Anish_Shobith_P_S_Cryptology_Lab_CYE_5151_02.pdf) |
+| 03 | Introduction to Python | [PDF](../../releases/download/latest/261100690032_Anish_Shobith_P_S_Cryptology_Lab_CYE_5151_03.pdf) |
 
 <!-- LAB:END -->
 
