@@ -15,7 +15,7 @@
 
 // Include a program straight from the programs/ folder, so the listing here is
 // always the file that actually runs.
-#let prog(path) = raw(read(path), lang: "python", block: true)
+#let prog(path) = codly.local()[#raw(read(path), lang: "python", block: true)]
 
 // A captured run. No line numbers, and an "Output" label so it reads apart from
 // the source above it.
@@ -244,9 +244,9 @@ Questions 8 to 12 all use the same string:
 
 == Question 8: Length, slicing and reversal
 
-`message[:5]` takes the first five characters and `message[-6:]` the last six.
-`message[3:8]` takes indices 3 to 7, since the end index is excluded, giving
-`PTOLO`. `message[::-1]` steps backwards to reverse the string.
+The first five characters come from `message[:5]`, the last six from `message[-6:]`.
+The slice `message[3:8]` covers indices 3 to 7, since the end index is excluded, so
+it gives `PTOLO`. A step of `-1`, written `message[::-1]`, reverses the string.
 
 #prog("programs/q08_slicing.py")
 
@@ -334,9 +334,9 @@ Word : ACIPHER
 
 == Question 13: Plaintext preprocessing
 
-`strip()` removes the leading and trailing spaces, `upper()` sets one case, and
-`replace(" ", "")` removes the gaps between words. The three are chained in one
-expression.
+`strip()` removes the surrounding spaces and `upper()` puts the text in one case.
+`replace(" ", "")` then closes the gaps between words. The three calls are chained
+into one expression.
 
 #prog("programs/q13_preprocess.py")
 
@@ -460,8 +460,9 @@ Enter number: 12
 
 == Question 20: Prime numbers
 
-`is_prime` rejects anything below 2 and otherwise tries trial divisors up to
-$sqrt(n)$. If none divides `n`, it is prime. The range is filtered with that test.
+Any number below 2 is rejected. Otherwise `is_prime` tries trial divisors up to
+$sqrt(n)$, and a number left with no divisor is prime. The range is filtered with
+that test.
 
 #prog("programs/q20_primes.py")
 
@@ -538,10 +539,10 @@ Inverse of 3 modulo 26 is 9 (check: 3 * 9 mod 26 = 1)
 == Question 23: Client and server communication
 
 The two programs talk over a TCP socket on the loopback address `127.0.0.1`. The
-server binds to port 65432, listens, and accepts one connection. The client
-connects, sends a message, and waits for the reply. The server returns the message
-under ROT13 rather than a plain echo, so `HELLO SERVER` comes back as
-`URYYB FREIRE`. The server is started first, then the client in a second terminal.
+server binds to port 65432 and listens, then accepts one connection. The client
+connects and sends a message, then waits for the reply. The reply comes back under
+ROT13 rather than as a plain echo, so `HELLO SERVER` returns as `URYYB FREIRE`. The
+server is started first, then the client in a second terminal.
 
 *Server.*
 
