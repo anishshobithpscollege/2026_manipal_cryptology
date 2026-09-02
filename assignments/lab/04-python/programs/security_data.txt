@@ -1,0 +1,8 @@
+User alice logged in from 192.168.10.15
+User bob logged in from 10.10.5.21
+Contact admin@securitylab.com
+Failed login attempts: 5
+Session ID: SEC-2026-1045
+Hash: a94f3c2d8e71b05f
+Port 443 connection established
+User admin failed authentication

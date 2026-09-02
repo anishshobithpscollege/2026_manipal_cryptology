@@ -1,0 +1,5 @@
+Cryptology is the study of secure communication.
+Cryptography focuses on protecting information.
+Cryptanalysis focuses on analyzing cryptographic systems.
+Plaintext represents the original message.
+Ciphertext represents the transformed message.
