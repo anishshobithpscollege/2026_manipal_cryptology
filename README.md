@@ -29,6 +29,10 @@ Every push to `main` compiles each assignment to a PDF and attaches it to the [l
 | 02 | Capturing Login Credentials over HTTP and HTTPS with Wireshark | [PDF](../../releases/download/latest/261100690032_Anish_Shobith_P_S_Cryptology_Lab_CYE_5151_02.pdf) |
 | 03 | Introduction to Python | [PDF](../../releases/download/latest/261100690032_Anish_Shobith_P_S_Cryptology_Lab_CYE_5151_03.pdf) |
 | 04 | File Handling and Regular Expressions | [PDF](../../releases/download/latest/261100690032_Anish_Shobith_P_S_Cryptology_Lab_CYE_5151_04.pdf) |
+| 05 | Classical Ciphers in Python | [PDF](../../releases/download/latest/261100690032_Anish_Shobith_P_S_Cryptology_Lab_CYE_5151_05.pdf) |
+| 06 | One Time Pad, Brute Force and Rail Fence | [PDF](../../releases/download/latest/261100690032_Anish_Shobith_P_S_Cryptology_Lab_CYE_5151_06.pdf) |
+| 07 | Columnar Transposition and OpenSSL | [PDF](../../releases/download/latest/261100690032_Anish_Shobith_P_S_Cryptology_Lab_CYE_5151_07.pdf) |
+| 08 | RSA and Diffie-Hellman Key Exchange | [PDF](../../releases/download/latest/261100690032_Anish_Shobith_P_S_Cryptology_Lab_CYE_5151_08.pdf) |
 
 <!-- LAB:END -->
 
