@@ -17,6 +17,7 @@ Every push to `main` compiles each assignment to a PDF and attaches it to the [l
 | 03 | Affine and Hill Ciphers | [PDF](../../releases/download/latest/261100690032_Anish_Shobith_P_S_Cryptology_CYE_5101_03.pdf) |
 | 04 | Hill Decryption, Transposition and Permutations | [PDF](../../releases/download/latest/261100690032_Anish_Shobith_P_S_Cryptology_CYE_5101_04.pdf) |
 | 05 | Rail Fence, DES Primitives and Product Ciphers | [PDF](../../releases/download/latest/261100690032_Anish_Shobith_P_S_Cryptology_CYE_5101_05.pdf) |
+| 06 | Cryptanalysis of Shift, Affine and One-Time Pad Ciphers | [PDF](../../releases/download/latest/261100690032_Anish_Shobith_P_S_Cryptology_CYE_5101_06.pdf) |
 
 <!-- THEORY:END -->
 
